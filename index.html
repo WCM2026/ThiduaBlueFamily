@@ -1,12 +1,34 @@
-   <!DOCTYPE html>
-   <html lang="vi">
-   <head>
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <title>Blue Family – Theo dõi cuộc thi</title>
-     <style>html,body{margin:0;height:100%;overflow:hidden}iframe{border:0;width:100%;height:100%}</style>
-   </head>
-   <body>
-     <iframe src="https://script.google.com/macros/s/AKfycbwcZxwi1_F5ByLDb5LU4bP8eY4HSkpGHKHx16Qy0G_zdN4vnGJMHXtGdlVGmcJGVsyZPQ/exec" allow="clipboard-write"></iframe>
-   </body>
-   </html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Family – Theo dõi cuộc thi</title>
+</head>
+<body style="margin:0;background:#f3f6fb;font-family:Arial,sans-serif">
+<div id="bfLoader" style="max-width:520px;margin:80px auto;padding:24px;background:#fff;border-radius:16px;border-top:6px solid #d71920;box-shadow:0 10px 30px rgba(0,0,0,.08);text-align:center">
+  <div style="font-size:34px">💙</div>
+  <div style="font-size:18px;font-weight:bold;color:#0b4ea2;margin:6px 0">Đang tải Blue Family Dashboard…</div>
+  <div id="bfMsg" style="color:#5b6b80;font-size:14px">Vui lòng chờ vài giây.</div>
+</div>
+<script>
+  // Link /exec của Apps Script (giữ nguyên khi triển khai "Phiên bản mới")
+  var API = 'https://script.google.com/macros/s/AKfycbwcZxwi1_F5ByLDb5LU4bP8eY4HSkpGHKHx16Qy0G_zdN4vnGJMHXtGdlVGmcJGVsyZPQ/exec';
+
+  // Tải giao diện trực tiếp từ Apps Script rồi hiển thị ngay trên trang này
+  // → không chạy trong khung của Google nên không phụ thuộc tài khoản Google đang đăng nhập trên trình duyệt
+  fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: 'html' }) })
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      var d = JSON.parse(t);
+      if (!d.ok || !d.html) throw new Error(d.message || 'Máy chủ không trả giao diện');
+      var html = d.html.replace('<head>', '<head><script>window.BF_API_URL = ' + JSON.stringify(API) + ';<\/script>');
+      document.open(); document.write(html); document.close();
+    })
+    .catch(function (e) {
+      document.getElementById('bfMsg').innerHTML = '<b style="color:#d71920">Không tải được dashboard:</b> ' + e.message +
+        '<br><br><a href="' + API + '" target="_blank">Mở trực tiếp bằng link Apps Script</a>';
+    });
+</script>
+</body>
+</html>
